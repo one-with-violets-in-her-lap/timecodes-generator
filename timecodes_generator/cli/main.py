@@ -20,8 +20,9 @@ LOG_LEVELS = {
 
 # TODO: make a cli argument + simpler custom pattern system for the future
 TIMECODE_SEARCH_PATTERNS = [
-    re.compile(r"Unit \d+. .+?(?=\.|$)"), # Unit {number}. {...remaining sentence}
-    re.compile(r"Activity [a-zA-Z]. .+?(?=\.|$)"), # Activity {letter}. {...remaining sentence}
+    re.compile(r"Unit \d+. Activity [a-zA-Z]. .+?(?=\.|$)"), # Unit {number}. Activity {letter}. {...remaining sentence}
+    re.compile(r"Unit \d+. Practice \d+..+?(?=\.|$)"), # Unit {number}. Practice {number}. {...remaining sentence}
+    re.compile(r"Unit \d+. (?![^.]*\bActivity|Practice\b)[^.]*(\.|$)"), # Unit {number}. {...remaining sentence}
 ]
 
 

@@ -1,4 +1,5 @@
 import logging
+import re
 from dataclasses import dataclass
 from re import Pattern
 from typing import TypedDict, cast
@@ -47,17 +48,19 @@ def generate_timecodes(
         text = "".join(
             [
                 segment["text"]
-                for segment in segments[segment_start_index : segment_start_index + 4]
+                for segment in segments[segment_start_index : segment_start_index + 3]
             ]
         )
 
-        _logger.debug('Merged segments: %s', text.strip())
+        _logger.debug("Merged segments: %s", text.strip())
+
+        match: re.Match | None = None
 
         for pattern in search_patterns:
             match = pattern.match(text.strip())
 
             if match is not None:
-                _logger.info('Match: %s', match.group())
+                _logger.info("Match: %s", match.group())
                 timecodes.append(
                     Timecode(
                         id=starting_segment["id"],
@@ -65,9 +68,10 @@ def generate_timecodes(
                         title=match.group(),
                     )
                 )
-                segment_start_index = segment_start_index + 4
-                continue
 
-        segment_start_index = segment_start_index + 1
+        if match is not None:
+            segment_start_index = segment_start_index + 3
+        else:
+            segment_start_index = segment_start_index + 1
 
     return timecodes
