@@ -47,7 +47,7 @@ def main():
     )
 
     print("Loading a model")
-    model = load_whisper_model("small.en")
+    model = load_whisper_model("small")
 
     print("Transcribing", "\n")
     timecodes = generate_timecodes(model, args.file_path, TIMECODE_SEARCH_PATTERNS)

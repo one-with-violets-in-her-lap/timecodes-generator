@@ -49,8 +49,6 @@ def parse_timecodes_from_segment_group(
     timecodes: list[Timecode] = []
 
     for match in search_pattern.finditer(text):
-        _logger.info("Match: %s", match.group())
-
         segment_with_occurrence = find_segment_by_string_position(
             segment_group, match.start()
         )
@@ -72,6 +70,17 @@ def parse_timecodes_from_segment_group(
     return timecodes
 
 
+def add_or_update_timecode(timecodes: list[Timecode], new_timecode: Timecode):
+    for timecode in timecodes:
+        if timecode.start_seconds == new_timecode.start_seconds:
+            timecode.title = new_timecode.title
+            _logger.debug("Updating title to more complete one: %s", timecode.title)
+            return
+
+    _logger.info("Adding timecode: %s", new_timecode)
+    timecodes.append(new_timecode)
+
+
 def extract_timecodes(segments: list[Segment], search_patterns: list[Pattern]):
     timecodes: list[Timecode] = []
 
@@ -88,17 +97,7 @@ def extract_timecodes(segments: list[Segment], search_patterns: list[Pattern]):
             for found_timecode in parse_timecodes_from_segment_group(
                 text, segment_group, pattern
             ):
-                if (
-                    len(
-                        [
-                            timecode
-                            for timecode in timecodes
-                            if timecode.start_seconds == found_timecode.start_seconds
-                        ]
-                    )
-                    == 0
-                ):
-                    timecodes.append(found_timecode)
+                add_or_update_timecode(timecodes, found_timecode)
 
     return timecodes
 
@@ -109,6 +108,6 @@ def generate_timecodes(
     transcription_result = whisper_model.transcribe(file_path)
     segments = cast(list[Segment], transcription_result["segments"])
 
-    _logger.debug("Segments: %s", segments)
+    _logger.debug("Transcribed: %s", transcription_result["text"])
 
     return extract_timecodes(segments, search_patterns)
