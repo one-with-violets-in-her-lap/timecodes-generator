@@ -23,6 +23,7 @@ class Segment(TypedDict):
 class Timecode:
     id: int
     start_seconds: int
+    end_seconds: int
     title: str
 
     def __str__(self):
@@ -63,6 +64,7 @@ def parse_timecodes_from_segment_group(
             Timecode(
                 id=segment_with_occurrence["id"],
                 start_seconds=segment_with_occurrence["start"],
+                end_seconds=segment_with_occurrence["end"],
                 title=match.group(),
             )
         )
@@ -74,7 +76,7 @@ def add_or_update_timecode(timecodes: list[Timecode], new_timecode: Timecode):
     for timecode in timecodes:
         if timecode.start_seconds == new_timecode.start_seconds:
             timecode.title = new_timecode.title
-            _logger.debug("Updating title to more complete one: %s", timecode.title)
+            _logger.debug("Updating title to more complete one: %s", timecode)
             return
 
     _logger.info("Adding timecode: %s", new_timecode)
@@ -109,5 +111,9 @@ def generate_timecodes(
     segments = cast(list[Segment], transcription_result["segments"])
 
     _logger.debug("Transcribed: %s", transcription_result["text"])
+    _logger.debug(
+        "Segments: %s",
+        "\n".join([str(segment) for segment in transcription_result["segments"]]),
+    )
 
     return extract_timecodes(segments, search_patterns)

@@ -1,0 +1,2 @@
+class AudioProcessingError(Exception):
+    pass
