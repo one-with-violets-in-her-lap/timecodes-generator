@@ -77,7 +77,7 @@ def start_cli(
     if save_tagged_mp3_file:
         mp3_file_path = export_tagged_audio_file(file_path, timecodes)
 
-        click.secho(f'\n✓ Saved at {mp3_file_path}', fg='green')
+        click.secho(f"\n✓ Saved at {mp3_file_path}", fg="green")
 
 
 if __name__ == "__main__":
