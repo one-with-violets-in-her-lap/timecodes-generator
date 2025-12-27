@@ -1,5 +1,4 @@
 import logging
-import re
 
 import click
 
@@ -9,6 +8,7 @@ from timecodes_generator.core.load import ModelName, load_whisper_model
 from timecodes_generator.core.utils.datetime_formatting import (
     format_timestamp_from_seconds,
 )
+from timecodes_generator.core.utils.regex import join_and_compile_regex_patterns
 
 log_level_names_mapping = logging.getLevelNamesMapping()
 
@@ -63,7 +63,7 @@ def start_cli(
     timecodes = generate_timecodes(
         model,
         file_path,
-        re.compile("|".join(search_patterns), flags=re.IGNORECASE),
+        join_and_compile_regex_patterns(search_patterns),
         verbose=False,
     )
 

@@ -1,17 +1,10 @@
-import re
-
 from timecodes_generator.core.generate_timecodes import Segment, extract_timecodes
+from timecodes_generator.core.utils.regex import join_and_compile_regex_patterns
 
 TEST_TIMECODE_SEARCH_PATTERNS = [
-    re.compile(
-        r"(?:Unit \d+.?)? Activity [a-zA-Z].+?(?=\.|$)", flags=re.IGNORECASE
-    ),  # Unit {number}. Activity {letter}. {...remaining sentence}
-    re.compile(
-        r"(?:Unit \d+.?)? Practice \d.+?(?=\.|$)", flags=re.IGNORECASE
-    ),  # Unit {number}. Practice {number}. {...remaining sentence}
-    re.compile(
-        r"Unit \d+.? (?![^.]*\bActivity|Practice\b)[^.]*(\.|$)", flags=re.IGNORECASE
-    ),  # Unit {number}. {...remaining sentence}
+    r"(?:Unit \d+.?)? Activity [a-zA-Z].+?(?=\.|$)",  # Unit {number}. Activity {letter}. {...remaining sentence}
+    r"(?:Unit \d+.?)? Practice \d.+?(?=\.|$)",  # Unit {number}. Practice {number}. {...remaining sentence}
+    r"Unit \d+.? (?![^.]*\bActivity|Practice\b)[^.]*(\.|$)",  # Unit {number}. {...remaining sentence}
 ]
 
 TEST_TRANSCRIPTION_SEGMENTS: list[Segment] = [
@@ -56,7 +49,8 @@ TEST_TRANSCRIPTION_SEGMENTS: list[Segment] = [
 
 def test_generate_timecodes():
     timecodes = extract_timecodes(
-        TEST_TRANSCRIPTION_SEGMENTS, TEST_TIMECODE_SEARCH_PATTERNS
+        TEST_TRANSCRIPTION_SEGMENTS,
+        join_and_compile_regex_patterns(TEST_TIMECODE_SEARCH_PATTERNS),
     )
 
     assert timecodes[0].start_seconds == 6
