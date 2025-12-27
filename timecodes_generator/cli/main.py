@@ -1,4 +1,5 @@
 import logging
+import re
 
 import click
 
@@ -70,7 +71,7 @@ def start_cli(
     timecodes = generate_timecodes(
         model,
         file_path,
-        join_and_compile_regex_patterns(search_patterns),
+        join_and_compile_regex_patterns(search_patterns, flags=re.IGNORECASE),
         verbose=False,
     )
 

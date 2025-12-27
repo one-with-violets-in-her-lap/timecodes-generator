@@ -1,3 +1,5 @@
+import re
+
 from timecodes_generator.core.generate_timecodes import Segment, extract_timecodes
 from timecodes_generator.core.utils.regex import join_and_compile_regex_patterns
 
@@ -50,7 +52,9 @@ TEST_TRANSCRIPTION_SEGMENTS: list[Segment] = [
 def test_generate_timecodes():
     timecodes = extract_timecodes(
         TEST_TRANSCRIPTION_SEGMENTS,
-        join_and_compile_regex_patterns(TEST_TIMECODE_SEARCH_PATTERNS),
+        join_and_compile_regex_patterns(
+            TEST_TIMECODE_SEARCH_PATTERNS, flags=re.IGNORECASE
+        ),
     )
 
     assert timecodes[0].start_seconds == 6
